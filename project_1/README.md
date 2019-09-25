@@ -14,7 +14,7 @@ The dataset is provided by UMD, which contains a collection of data with 79838 o
 * Are there any correlations between diapers/school kits and financial support (money provided to clients)?
 
 # Methods
-Data preparation: data cleaning and data transformation
-Exploratory analysis: statistical data analysis
-Visualization: ggplot2
+1. Data preparation: data cleaning and data transformation
+2. Exploratory analysis: statistical data analysis
+3. Visualization: ggplot2
 
