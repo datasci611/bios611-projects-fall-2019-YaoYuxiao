@@ -5,8 +5,16 @@ Yuxiao Yao
 Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors to food, shelter and a future. They connect with the community to end homelessness and fight poverty by offering food, shelter and a future to neighbors in need. Here is the official website: http://www.umdurham.org/
 
 # Datasets
-The dataset is provided by UMD. It has more than 10 variables including date, family identifiers, finicial support, etc. 
+The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has more than 10 variables including Client File Number, Client File Merge, Bus Tickets (Number of), Notes of Service, Food Provided for, Food Pounds, Clothing Items, Diapers, School Kits, Hygiene Kits, Referrals, and Financial Support.
+
+# Questions
+* How many clients (individual or family) were served by UMD between 1999 and 2019? Is there any trend?
+* How many new clients joined UMD services yearly between 1999 and 2019? Is there any trend?
+* How many food pounds/clothing items are provided during 2018? Is there any seasonality?
+* Are there any correlations between diapers/school kits and financial support (money provided to clients)?
 
 # Methods
+Data preparation: data cleaning and data transformation
+Exploratory analysis: statistical data analysis
+Visualization: ggplot2
 
-ggplot, tidyverse ect.
