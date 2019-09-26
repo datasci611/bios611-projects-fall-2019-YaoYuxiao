@@ -2,11 +2,15 @@
 title: "UMD report"
 author: "YuxiaoYao"
 date: "9/25/2019"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE,message=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 # Background
 Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors to food, shelter and a future. They connect with the community to end homelessness and fight poverty by offering food, shelter and a future to neighbors in need. Here is the official website of UMD: http://www.umdurham.org/
@@ -15,7 +19,7 @@ Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors
 The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has more than 10 variables including Client File Number, Client File Merge, Bus Tickets (Number of), Notes of Service, Food Provided for, Food Pounds, Clothing Items, Diapers, School Kits, Hygiene Kits, Referrals, and Financial Support.
 
 
-```{r prep  echo=FALSE}
+```{r  prep, echo=FALSE,message=FALSE}
 library(tidyverse)
 
 raw = read_tsv("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-YaoYuxiao/master/project_1/data/UMD_Services_Provided_20190719.tsv")
@@ -27,9 +31,9 @@ raw$Date<-as.Date(raw$Date,format="%m/%d/%Y")
 ```
 
 # Problems
-## Problem 1: How many clients  were served by UMD between 1999 and 2019? Are there any trends?
+### Problem 1: How many clients  were served by UMD between 1999 and 2019? Are there any trends?
 
-```{r p1 echo=FALSE}
+```{r p1, echo=FALSE,message=FALSE}
 client= raw %>%
   rename('id'='Client File Number')%>%
   select(Date, id)%>%
@@ -48,9 +52,9 @@ ggplot(client,aes(x= Year))+
 
 
 
-## Problem 2: How many food pounds are provided during 2017? Is there a seasonality?
+### Problem 2: How many food pounds are provided during 2017? Is there a seasonality?
 
-```{r p3 echo=FALSE}
+```{r p2, echo=FALSE,message=FALSE}
 food_group= raw %>%
   rename('Food'='Food Pounds')%>%
   select(Date, 'Food')%>%
@@ -74,9 +78,9 @@ ggplot(food_group)+
 
 ```
 
-## Problem 3: How many clothing items are provided during 2017? Is there a seasonality?
+### Problem 3: How many clothing items are provided during 2017? Is there a seasonality?
 
-```{r p4 echo=FALSE}
+```{r p3, echo=FALSE,message=FALSE}
 clothing_group= raw %>%
   rename('Clothing'='Clothing Items')%>%
   select(Date, 'Clothing')%>%
@@ -95,6 +99,6 @@ ggplot(clothing_group)+
 
 
 
-## Problem 4: Are there any correlations between diapers/school kits and financial support (money provided to clients)?
+### Problem 4: Are there any correlations between diapers/school kits and financial support (money provided to clients)?
 
-## Conclusions
+# Conclusions
