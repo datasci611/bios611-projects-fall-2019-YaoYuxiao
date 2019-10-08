@@ -13,92 +13,138 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 # Background
-Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors to food, shelter and a future. They connect with the community to end homelessness and fight poverty by offering food, shelter and a future to neighbors in need. Here is the official website of UMD: http://www.umdurham.org/
+Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors to food, shelter and a future. They connect with the community to end homelessness and fight poverty by offering food, shelter and a future to neighbors in need. Here is the official website of UMD: http://www.umdurham.org/.
+UMD provided 54,378 nights of shelter to homeless neighbors (792 unique individuals) and ended homelessness for 243 individuals. Also, they provided over 500 households with clothing and groceries monthly.
 
 # Dataset
-The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has more than 10 variables including Client File Number, Client File Merge, Bus Tickets (Number of), Notes of Service, Food Provided for, Food Pounds, Clothing Items, Diapers, School Kits, Hygiene Kits, Referrals, and Financial Support.
+The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has 9 variables including:
 
+*  Date	Date service was provided
+* Client File Number	Family identifier (individual or family)
+* Client File Merge	Separate files were created for one family and merged later
+* Bus Tickets (Number of): Service discontinued
+* Notes of Service
+* Food Provided for:  Number of people in the family for which food was provided
+* Food Pounds: Number of pounds of food that each individual or family received when shopping at UMD food pantry
+* Clothing Items: Number of clothing items received per family or individual
+* Diapers: Number of packs of diapers received (individuals/families are given 2 packs of diapers per child, and packs contain 22 diapers on average)
+* School Kits
+* Hygiene Kits: Number of kits received per individual or family. Kits contain soap, shampoo, conditioner, lotion, deodorant, a toothbrush, toothpaste, a washcloth, a disposable razor, and a bottle of shaving cream.
+* Financial Support: Money provided. Service discontinued
 
-```{r  prep, echo=FALSE,message=FALSE}
+**For this project, I will focus on the Client File Number, Food Pounds, Clothing Items, Diapers, School Kits and Financial Support. Since the data in 2019 is not complete, I will select a 20-year time period from 1998-01-01 to 2018-12-31.**
+
+# Questions
+
+```{r  prep}
 library(tidyverse)
 
 raw = read_tsv("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-YaoYuxiao/master/project_1/data/UMD_Services_Provided_20190719.tsv")
 
 # convert the data type into Date
 raw$Date<-as.Date(raw$Date,format="%m/%d/%Y")
-  
+#preparation: rename variables and filter by time
+data=raw %>%
+  rename('id'='Client File Number','Food'='Food Pounds','Clothing'='Clothing Items',
+         'Schoolkits'='School Kits','Money'='Financial Support')%>%
+  filter(Date>="1998-01-01" & Date<="2018-12-31")
+data
   
 ```
 
-# Problems
+# Analysis
 ### Problem 1: How many clients  were served by UMD between 1999 and 2019? Are there any trends?
 
-```{r p1, echo=FALSE,message=FALSE}
-client= raw %>%
-  rename('id'='Client File Number')%>%
+```{r p1}
+# general statistics: average, number label, lines ,smoothing,why(interpretation)
+#problem1
+# prepare data for p1 
+client= data %>%
   select(Date, id)%>%
-  filter(Date>="1999-01-01" & Date<="2019-07-19")%>%
   drop_na() %>%
-  separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
-  distinct(id, .keep_all = TRUE)
+ distinct(id, .keep_all = TRUE)%>%
+  arrange(Date)
 
-ggplot(client,aes(x= Year))+
-         geom_bar() +
-        labs(x="Year",y="Client Number",title = "Number of Clients Changes by Year")+
-        theme_bw() 
+client_yearly=client %>%
+  separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
+  group_by(Year) %>%
+  summarise(client_sum=n())
+
+client_yearly
+
+# plot the data
+
+ggplot(client_yearly,aes(as.numeric(Year),client_sum))+
+  geom_point()+
+  geom_line(size=1,color='darkgreen') +
+  labs(x="Year",y="Client Number",title = "Number of Clients Changes by Year")
+ # scale_x_continuous(limits=c('1998','2018'))
+ # TODO set breaks for x axis
   
 
 ```
 
+In general, number of clients is increasing from 1999 to 2002, but get stable in recent years from 2011.
 
 
-### Problem 2: How many food pounds are provided during 2017? Is there a seasonality?
+### Problem 2: How many food pounds are provided each month from 2008 to 2017? Is there a seasonality?
+Assumingly, clients need more food in winter than summer. This could be helpful for UMD to get prepared by knowing how many food pounds should be collected each month.
 
-```{r p2, echo=FALSE,message=FALSE}
-food_group= raw %>%
-  rename('Food'='Food Pounds')%>%
+```{r p2}
+food_group= data %>%
   select(Date, 'Food')%>%
-  filter(Date>="2017-01-01" & Date<="2017-12-31")%>%
   drop_na() %>%
+  filter(Date>="2008-01-01"&Date<="2017-12-31")%>% # focus on ten years(2008-2017)，because of abnormal data in June 2018
   separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
-  group_by(Month)%>%
+  group_by(Year,Month)%>%
   summarise(num=n(),mean=mean(Food))%>%
-  mutate(sum=num*mean)
+  mutate(sum=num*mean)%>%
+  arrange(desc(Year))
 
 
-ggplot(food_group)+
-  geom_bar(mapping = aes(x = Month, y = sum), stat = "identity") +
-  labs(x="Month",y="Food Pounds",title = "Food Pounds Provided in 2017")+
-  theme_bw() 
+food_group
 
 
-
-
-
+ggplot(food_group,aes(as.numeric(Month),sum))+
+ # geom_bar(mapping = aes(x = Month, y = sum), stat = "identity") +
+  geom_line(size=0.7,color='darkgreen')+
+  labs(x="Month",y="Food Pounds",title = "Food Pounds Provided from 2008 to 2017")+
+  facet_wrap(vars(Year)) #TODO change to 3*3
+# TODO set breaks for x axis
 
 ```
 
-### Problem 3: How many clothing items are provided during 2017? Is there a seasonality?
+In general, the number of food pounds is increasing yearly. There are increasing trends at the end of a year, in another words, in November and December. 
 
-```{r p3, echo=FALSE,message=FALSE}
-clothing_group= raw %>%
-  rename('Clothing'='Clothing Items')%>%
+### Problem 3: How many clothing items are provided each month from 2008 to 2017? Is there a seasonality?
+
+```{r p3}
+
+clothing_group= data %>%
   select(Date, 'Clothing')%>%
-  filter(Date>="2017-01-01" & Date<="2017-12-31")%>%
   drop_na() %>%
+  filter(Date>="2008-01-01"&Date<="2017-12-31")%>% # focus on ten years(2008-2017)，because of abnormal data in June 2018
   separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
-  group_by(Month)%>%
+  group_by(Year,Month)%>%
   summarise(num=n(),mean=mean(Clothing))%>%
-  mutate(sum=num*mean)
+  mutate(sum=num*mean)%>%
+  arrange(desc(Year))
 
-ggplot(clothing_group)+
-  geom_bar(mapping = aes(x = Month, y = sum), stat = "identity") +
-  labs(x="Month",y="Clothing Items",title = "Clothing Items Provided in 2017")+
-  theme_bw() 
+clothing_group
+
+ggplot(clothing_group,aes(as.numeric(Month),sum))+
+  # geom_bar(mapping = aes(x = Month, y = sum), stat = "identity") +
+  geom_line(size=0.7,color='darkblue')+
+  labs(x="Month",y="Clothing Items",title = "Food Pounds Provided from 2008 to 2017")+
+  facet_wrap(vars(Year)) #TODO change to 3*3
+# TODO set breaks for x axis
+
 ```
 
-
+As for clothing items, changes are not obvious during a year. No seasonality.
 
 ### Problem 4: Are there any correlations between diapers/school kits and financial support (money provided to clients)?
 
-# Conclusions
+
+# Conclusions and Discussions
+
