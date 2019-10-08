@@ -1,5 +1,5 @@
 ---
-title: "UMD report"
+title: "Project 1: Urban Ministries of Durham"
 author: "YuxiaoYao"
 date: "9/25/2019"
 output:
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 # Background
 Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors to food, shelter and a future. They connect with the community to end homelessness and fight poverty by offering food, shelter and a future to neighbors in need. Here is the official website of UMD: http://www.umdurham.org/.
-UMD provided 54,378 nights of shelter to homeless neighbors (792 unique individuals) and ended homelessness for 243 individuals. Also, they provided over 500 households with clothing and groceries monthly.
+
 
 # Dataset
 The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has 9 variables including:
@@ -35,8 +35,17 @@ The dataset is provided by UMD, which contains a collection of data with 79838 o
 **For this project, I will focus on the Client File Number, Food Pounds, Clothing Items, Diapers, School Kits and Financial Support. Since the data in 2019 is not complete, I will select a 20-year time period from 1998-01-01 to 2018-12-31.**
 
 # Questions
+Since the main purpose of the project is to help UMD with desicion making, here are some of questions I am interested in. Firstly, the number of clients plays an important role because it is related to the scale of services provided by UMD. Also, the changes of client number shows how UMD developed over years. Secondly, I would like to focus on seasonalities of the services, especially food and clothing services. Assumingly, clients need more food and clothing items in winter than summer. The results can provide UMD with some suggestions on food and clothes collecting and preserving decisions. Then I am interested in clients who have babies, so I would like to see the correlations between diapers and clothing items/food. So here are four questions I would like to analyze:
 
-```{r  prep}
+* How many clients  were served by UMD between 1998 and 2018? Are there any trends?
+* How many food pounds are provided each month from 2008 to 2017? Is there a seasonality?
+* How many clothing items are provided each month from 2008 to 2017? Is there a seasonality?
+* Are there any correlations between diapers and clothing items/food?
+
+# Data Preparation
+For data preparation, I convert the data type of "Date" into date type. Then I changed variable names to avoid space in them for convinence. Also, I limited the time scale using filter to avoid incomplete data in this year (2019).
+
+```{r  prep, message=FALSE,warning=FALSE}
 library(tidyverse)
 
 raw = read_tsv("https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-YaoYuxiao/master/project_1/data/UMD_Services_Provided_20190719.tsv")
@@ -53,7 +62,9 @@ data
 ```
 
 # Analysis
-### Problem 1: How many clients  were served by UMD between 1999 and 2019? Are there any trends?
+## Introduction
+
+### Question 1: How many clients  were served by UMD between 1998 and 2018? Are there any trends?
 
 ```{r p1}
 # general statistics: average, number label, lines ,smoothing,why(interpretation)
@@ -72,51 +83,61 @@ client_yearly=client %>%
 
 client_yearly
 
-# plot the data
-
+# plot the data 
+# TODO set breaks for x axis
 ggplot(client_yearly,aes(as.numeric(Year),client_sum))+
   geom_point()+
+  geom_text(aes(label=client_sum),vjust=-0.5,size=3)+
   geom_line(size=1,color='darkgreen') +
-  labs(x="Year",y="Client Number",title = "Number of Clients Changes by Year")
- # scale_x_continuous(limits=c('1998','2018'))
- # TODO set breaks for x axis
+  labs(x="Year",y="Client Number",title = "Fig1: Number of Clients Changes by Year")
+ 
+ 
   
 
 ```
 
-In general, number of clients is increasing from 1999 to 2002, but get stable in recent years from 2011.
+In general, number of clients is increasing from 1999 to 2002, but become more stable in recent years from 2011. UMD served 1,012 clients (families or individuals) in 2009, which is the most over 20 years. The client number increased by 102% in 2002, which is the peak from 1998 to 2009. The average number of clients from 1998 to 2018 is 712.  
+UMD provided 54,378 nights of shelter to homeless neighbors (792 unique individuals) and ended homelessness for 243 individuals. Also, they provided over 500 households with clothing and groceries monthly.
 
-
-### Problem 2: How many food pounds are provided each month from 2008 to 2017? Is there a seasonality?
-Assumingly, clients need more food in winter than summer. This could be helpful for UMD to get prepared by knowing how many food pounds should be collected each month.
+## Seasonality Analysis
+### Question 2: How many food pounds are provided each month from 2008 to 2017? Is there a seasonality?
+Assumingly, clients need more food in winter than summer. This could be helpful for UMD to get prepared by knowing how many food pounds should be collected each month. In this part, I limited the time from 2008 to 2017 to avoid abnormal data in June, 2018. This c would not affect the seasonality we want to find. 
 
 ```{r p2}
 food_group= data %>%
   select(Date, 'Food')%>%
   drop_na() %>%
-  filter(Date>="2008-01-01"&Date<="2017-12-31")%>% # focus on ten years(2008-2017)，because of abnormal data in June 2018
+  filter(Date>="2008-01-01"&Date<="2017-12-31")%>% 
   separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
   group_by(Year,Month)%>%
   summarise(num=n(),mean=mean(Food))%>%
   mutate(sum=num*mean)%>%
   arrange(desc(Year))
-
-
 food_group
-
+food_group_by_month=food_group%>%
+  group_by(Month)%>%
+  summarise(num_monthly=mean(num)*12)%>%
+  arrange(desc(Month))
+food_group_by_month
 
 ggplot(food_group,aes(as.numeric(Month),sum))+
  # geom_bar(mapping = aes(x = Month, y = sum), stat = "identity") +
-  geom_line(size=0.7,color='darkgreen')+
-  labs(x="Month",y="Food Pounds",title = "Food Pounds Provided from 2008 to 2017")+
+  geom_line(size=0.7,color='darkblue')+
+  labs(x="Month",y="Food Pounds",title = "Fig2: Food Pounds Provided by Month from 2008 to 2017")+
   facet_wrap(vars(Year)) #TODO change to 3*3
 # TODO set breaks for x axis
 
+ggplot(food_group_by_month,aes(as.numeric(Month),num_monthly))+
+  geom_line(size=1,color='darkblue')+
+  geom_text(aes(label=num_monthly),vjust=-0.5,size=3)+
+  scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))+
+  labs(x="Month",y="Food Pounds",title = "Fig3: Sum of Food Pounds Provided by Month from 2008 to 2017")
+
 ```
 
-In general, the number of food pounds is increasing yearly. There are increasing trends at the end of a year, in another words, in November and December. 
+Figure2 shows the number of food pounds is increasing yearly. There are increasing trends at the end of a year, in another words, in October, November and December. In Figure3, we can see that UMD provided most food in October, and then June, November and December. February is the month with least food provided, and then May and July. In general, we can draw the conclusion that food is more needed in winter than summer.
 
-### Problem 3: How many clothing items are provided each month from 2008 to 2017? Is there a seasonality?
+### Question 3: How many clothing items are provided each month from 2008 to 2017? Is there a seasonality?
 
 ```{r p3}
 
@@ -129,22 +150,91 @@ clothing_group= data %>%
   summarise(num=n(),mean=mean(Clothing))%>%
   mutate(sum=num*mean)%>%
   arrange(desc(Year))
-
 clothing_group
+clothing_group_by_month=clothing_group%>%
+  group_by(Month)%>%
+  summarise(num_monthly=mean(num)*12)%>%
+  arrange(desc(Month))
+clothing_group_by_month
 
 ggplot(clothing_group,aes(as.numeric(Month),sum))+
   # geom_bar(mapping = aes(x = Month, y = sum), stat = "identity") +
-  geom_line(size=0.7,color='darkblue')+
-  labs(x="Month",y="Clothing Items",title = "Food Pounds Provided from 2008 to 2017")+
+  geom_line(size=0.7,color='purple4')+
+  labs(x="Month",y="Clothing Items",title = "Fig4: Clothing Items Provided from 2008 to 2017")+
   facet_wrap(vars(Year)) #TODO change to 3*3
 # TODO set breaks for x axis
+ggplot(clothing_group_by_month,aes(as.numeric(Month),num_monthly))+
+  geom_line(size=1,color='purple4')+
+  geom_text(aes(label=num_monthly),vjust=-0.5,size=3)+
+  scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))+
+  labs(x="Month",y="Food Pounds",title = "Fig5: Sum of Clothing Items Provided by Month from 2008 to 2017")
+
 
 ```
 
-As for clothing items, changes are not obvious during a year. No seasonality.
+We cannot see obvious seasonality in Figure4. However, Figure5 shows similar pattern with Figure3, the food pounds provided by month. UMD provided most clothing items in October, and then November. February is the month with least food provided, and then May and July. In general, we can draw the conclusion that clothing items are more needed in winter than summer.
 
-### Problem 4: Are there any correlations between diapers/school kits and financial support (money provided to clients)?
 
+## Correlation Analysis
+### Question4: Are there any correlations between diapers and clothing items/food?
+```{r p4,message=FALSE,warning=FALSE}
+# -----------diapers and clothing items----------
+corr_data=data%>%
+  select(Date,Diapers,Clothing)%>%
+  drop_na()%>%
+  arrange(desc(Diapers))
+# replace NA with 0
+# corr_data[is.na(corr_data)]<-0 
+corr_data
+
+  ggplot(corr_data,aes(Diapers,Clothing))+ 
+    geom_point(alpha=0.5)+
+    geom_smooth(method = "lm")+
+    scale_x_continuous(limits=c(0,60))+ # set limits to avoid two abnormal data
+  labs(x="Number of Packs of Diapers",y="Number of Clothing Items",title="Fig6: Correlations between Diampers and Clothing Items")
+  # -----------diapers and food----------
+  
+
+corr_data2=data%>%
+  select(Date,Diapers,Food)%>%
+  drop_na()%>%
+  arrange(desc(Diapers))
+# replace NA with 0
+# corr_data[is.na(corr_data)]<-0 
+corr_data2
+
+  ggplot(corr_data2,aes(Diapers,Food))+ 
+    geom_point(alpha=0.5)+
+    geom_smooth(method = "lm")+
+    scale_x_continuous(limits=c(0,60))+ # set limits to avoid two abnormal data
+  labs(x="Number of Packs of Diapers",y="Food Pounds",title="Fig6: Correlations between Diampers and Food Pounds")
+```
+
+We can see that in clients who need more diapers also need more clothes, but need less food. Also, the number of diapers seems more likely to be 12 or 24 than other random numbers. This might related to the bigger pack of diapers. When we look closely to clients who have babies, we can guess that more babies a family has, more clothing items they need. However, babies do not mean more food, on the contrary, they need less food.
 
 # Conclusions and Discussions
+## Conclusions
+
+* Number of clients is increasing from 1999 to 2002, but become more stable in recent years from 2011.
+* In general, food and clothing items are more needed in winter than summer.
+* Diapers has positive correlation with clothing items and has negative correlation with food pounds.
+
+## Limitations
+
+* For question2 and question3, we assume that food and clothing items are provided to feed the need of clients without limitations. However, the services might be affected by other factors. As far as I know, some food and clothes come from neighborhood donation, which may lead to sources problems. Under this condition, food and clothes that are provided to clients cannot represent needs.  
+* For question4, the underline assumpssion is that more clients who need more diapers have more babies. Although it seems reasonable, it does not have to be the truth. 
+
+## Future works
+In the presentation, the social workers said they are particularly interested in which clients they can help make a permanent transition to self-sufficiency, and which clients continue to need help. In this context, I would like to find some patterns and differences between different types of clients. For instance, after shrinking the size of the variables through PCA, we can perform a unsupervised cluster analysis to find various types of clients and compare them in terms of mean, variance, kurtosis, and skewness (e.g., parametric methods) and general shape of distribution (e.g., nonparametric methods), based off of the principle components. 
+
+* In this regard, it would meaningful to look closely at client duration of assistance.  
+   client.duration<- data %>%  
+   group_by(`Client File Number`) %>%   
+   summarize(Duration=difftime(max(Date),min(Date)))  
+
+* We can divide clients to a group of people who received assistance only 1 time and the other who received assistance multiple times.  
+   client.assistance <-data %>%  
+   group_by(`Client File Number`) %>%  
+   summarize(First=min(Date),Last=max(Date)) %>%  
+   filter(First==Last)  
 
