@@ -8,9 +8,9 @@ Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors
 The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has more than 10 variables including Client File Number, Client File Merge, Bus Tickets (Number of), Notes of Service, Food Provided for, Food Pounds, Clothing Items, Diapers, School Kits, Hygiene Kits, Referrals, and Financial Support.
 
 ## Questions
-* How many clients (individual or family) were served by UMD between 1999 and 2019? Are there any trends?
-* How many new clients joined UMD services yearly between 1999 and 2019? Are there any trends?
-* How many food pounds/clothing items are provided during 2018? Is there a seasonality?
+* How many clients (individual or family) were served by UMD between 1998 and 2018? Are there any trends?
+* How many food pounds are provided each month from 2008 to 2017? Is there a seasonality?
+* How many clothing items are provided each month from 2008 to 2017? Is there a seasonality?
 * Are there any correlations between diapers/school kits and financial support (money provided to clients)?
 
 ## Methods
