@@ -11,7 +11,7 @@ The dataset is provided by UMD, which contains a collection of data with 79838 o
 * How many clients (individual or family) were served by UMD between 1998 and 2018? Are there any trends?
 * How many food pounds are provided each month from 2008 to 2017? Is there a seasonality?
 * How many clothing items are provided each month from 2008 to 2017? Is there a seasonality?
-* Are there any correlations between diapers/school kits and financial support (money provided to clients)?
+* Are there any correlations between diapers and clothing items/food?
 
 ## Methods
 1. Data preparation: data cleaning and data transformation
