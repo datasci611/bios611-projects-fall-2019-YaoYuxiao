@@ -1,4 +1,4 @@
-# bios611-project1:Shiny Dashboard - Urban Ministries of Durham
+# bios611-project2: Shiny Dashboard - UMD
 Yuxiao Yao
 
 ## Background 
