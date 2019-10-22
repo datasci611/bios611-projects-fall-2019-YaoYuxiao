@@ -5,9 +5,9 @@ account: yaoyuxiao
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1361918
-bundleId: 2523942
+bundleId: 2524133
 url: https://yaoyuxiao.shinyapps.io/project_2/
-when: 1571733671.21536
+when: 1571737681.12104
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: proj_draft.R
