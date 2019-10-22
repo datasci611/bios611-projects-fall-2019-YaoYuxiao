@@ -1,4 +1,8 @@
+
 library(tidyverse)
+library(ggplot2)
+library(dplyr)
+
 
 clean = function(data_path){
   # read raw data
@@ -23,60 +27,103 @@ clean = function(data_path){
 
 # ---------------- part A : trends-------------------------
 
-data1= function(data,service,year){
-  
-  
 
-}
 
 plot1=function(data,service,year){
-  service_var=switch(service,'Client Number'='id','Food'='Food', 'Clothing Items'='Clothing', 
-                     'Diapers'='Diapers', 'School Kits'='Schoolkits', 'Hygiene Kits'='Hygienekits',
-                     'Bus Tickets'='Bus','Financial Support'='Money')
+  
   service_yearly= data %>%
     select(Date,service)%>%
     drop_na() %>%
     separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
-    filter(between(year,year[1],year[2]))%>%
+    filter(Year>=year[1]&Year<=year[2])%>%
     group_by(Year) %>%
     summarise(sum=n())
-  
   
   p=ggplot(service_yearly,aes(as.numeric(Year),sum))+
     geom_point()+
     geom_text(aes(label=sum),vjust=-0.5,size=3)+
     geom_line(size=1,color='darkgreen') +
+    scale_x_continuous(breaks = seq(year[1],year[2],2))+
     labs(x="Year",y= paste('Number of',service,sep=''),
-         title = paste('Number of',service,'Changes from',min(year),' to ',max(year),sep=''))
+         title = paste('Number of ',service,' Changes from ',min(year),' to ',max(year)))
+  
+ 
   return(p)
 }
 # ---------------- part B : seasonalities-------------------------
-data2= function(data,service,year){
+
+data2=function(data,service,year){
+  data2= data %>%
+    select(Date,service)%>%
+    drop_na(service) %>%
+    separate(Date, sep = "-", into = c("Year", "Month", "Day"))%>%
+    group_by(Year,Month)%>%
+    filter(Year>=year[1]&Year<=year[2])%>%
+    summarise(num=n(),mean=mean(service))%>%
+    mutate(sum=num*mean)%>%
+    arrange(desc(Year))
   
-  
-  
+  return(data2)
 }
+
 plot2a=function(data,service,year){
+  data2=data2(data,service,year)
   
-  
+ p= ggplot(data2,aes(as.numeric(Month),sum))+
+    geom_line(size=0.7,color='purple4')+
+   scale_x_continuous(breaks = c(1,2,3,4,5,6,7,8,9,10,11,12))+
+    labs(x="Month",y=paste('Number of ',service),
+         title = paste(service,' Changes from ',min(year),' to ',max(year)))+
+    facet_wrap(vars(Year))
+ return(p)
 }
-plot2b=function(data,service){
+
+#pie chart
+plot2b=function(data,service,year){
+  data2b=data2(data,service,year)%>%
+    group_by(Month)%>%
+    summarise(num_monthly=mean(num)*12)%>%
+    mutate(prop=num_monthly/sum(num_monthly))
   
-  
+  p=ggplot(data2b,aes(x="",y=prop,fill=Month))+ # TODO fill=season? geom_text?
+    geom_bar(stat="identity",width=1)+
+    coord_polar(theta = "y")+ 
+    labs(title = paste(service,' by Month from ',min(year),' to ',max(year)))
+return(p)
 }
-table2b=function(data){
+
+#table 
+table2b=function(data,service,year){
+  table2b=data2(data,service,year)%>%
+    group_by(Month)%>%
+    summarise(num_monthly=mean(num)*12)%>%
+    arrange(Month)%>%
+    mutate(prop=num_monthly/sum(num_monthly))
   
+  return(table2b)
 }
 
 # ---------------- part C : correlations-------------------------
-data3= function(data,variable1,variable2){
-  
-  
-  
-}
+
 plot3=function(data,variable1,variable2){
+  corr_data=data%>%
+    select(Date,variable1,variable2)%>%
+    drop_na()
   
-  
+ p=ggplot(corr_data,aes(x=get(variable1),y=get(variable2)))+
+    geom_point(alpha=0.5)+
+    geom_smooth(method = "lm")+
+    labs(x=variable1,y=variable2,
+         title=paste("Correlation between ",variable1," and ",variable2))
+ if(variable1='Diapers'){
+   p=ggplot(corr_data,aes(x=get(variable1),y=get(variable2)))+
+     geom_point(alpha=0.5)+
+     geom_smooth(method = "lm")+
+     labs(x=variable1,y=variable2,
+          title=paste("Correlation between ",variable1," and ",variable2))+
+     scale_x_continuous(limits=c(0,60)) # set limits to avoid two abnormal data
+ }
+  return(p)
 }
 
 # TODO table3=function(data,variable1,variable2){}

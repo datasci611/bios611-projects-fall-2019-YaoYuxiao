@@ -1,5 +1,10 @@
 library(shiny)
 library(tidyverse)
+library(dplyr)
+library(shinydashboard)
+library(ggplot2)
+library(rsconnect)
+
 source("helper_functions.R")
 
 data=clean('https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2019-YaoYuxiao/master/project_1/data/UMD_Services_Provided_20190719.tsv')
@@ -7,12 +12,12 @@ data=clean('https://raw.githubusercontent.com/datasci611/bios611-projects-fall-2
 
 ui <- fluidPage(
   titlePanel("BIOS611 Project2 - Yuxiao Yao"),
-  
+  sidebarPanel(
   h3(helpText('Part 1. Trend Analysis')),
   helpText("Please select client number or any type of service as 
            y-axis and time period from 1998 to 2018 as x-axis."),
   
-  radioButtons('plot1_y',
+  selectInput('plot1_y',
                'Client Number/Type of services',
                c('Client Number'='id','Food'='Food', 'Clothing Items'='Clothing', 
                  'Diapers'='Diapers', 'School Kits'='Schoolkits', 'Hygiene Kits'='Hygienekits',
@@ -32,7 +37,7 @@ ui <- fluidPage(
   
   radioButtons('plot2_service',
                'Type of services',
-               choices = c('Food Pounds', 'Clothing Items')),
+               choices = c('Food Pounds'='Food', 'Clothing Items'='Clothing')),
   
   sliderInput('plot2_year',
               'Years',
@@ -47,11 +52,12 @@ ui <- fluidPage(
   
   radioButtons('plot3_x',
                'Variale1 (x-axis)',
-               choices = c('Diapers', 'School Kits')),
+               choices = c('Diapers'='Diapers', 'School Kits'='Schoolkits'),
+               selected='Diapers'),
   
   radioButtons('plot3_y',
                'Variale2 (y-axis)',
-               choices = c('Food Pounds', 'Clothing Items')),
+               choices = c('Food Pounds'='Food', 'Clothing Items'='Clothing'))),
   
   mainPanel(
     
@@ -75,38 +81,36 @@ server <- function(input, output) {
   # part1
   
   output$Plot1 <- renderPlot({
-    
-    data1=data1(data,input$plot1_y,input$plot1_x)
-    plot1(data1,input$plot1_y,input$plot1_x)
+  
+    plot1(data,input$plot1_y,input$plot1_x)
     
   })
   
   # part2
   
   output$Plot2a <- renderPlot({
-    data2=data2(data,input$plot1_y,input$plot1_x)
-    plot2a(data2,input$plot1_y,input$plot1_x)
+   
+    plot2a(data,input$plot2_service,input$plot2_year)
     
   })
   
   output$Plot2b <- renderPlot({
-    
-    data2=data2(data,input$plot1_y,input$plot1_x)
-    plot2b(data2,input$plot1_y,input$plot1_x)
+   
+    plot2b(data,input$plot2_service,input$plot2_year)
     
   })
   
   output$Table2b <- renderTable({
-    data2=data2(data,input$plot1_y,input$plot1_x)
-    table2b(data2,input$plot1_y,input$plot1_x)
+    
+    table2b(data,input$plot2_service,input$plot2_year)
     
   })
   
   # part3
   
   output$Plot3 <- renderPlot({
-    data3=data3(data,input$plot3_x,input$plot3_y)
-    plot3(data3,input$plot3_x,input$plot3_y)
+    
+    plot3(data,input$plot3_x,input$plot3_y)
     
   })
   
