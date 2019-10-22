@@ -1,5 +1,7 @@
 # bios611-project2: Shiny Dashboard - UMD
 Yuxiao Yao
+## Project URL
+https://yaoyuxiao.shinyapps.io/project_2/
 
 ## Background 
 Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors to food, shelter and a future. 
@@ -22,4 +24,4 @@ Users can select food pounds or clothing items as y-axis and time period from 19
 A point plot shows the data distribution of two variables, and a line shows the result of fitting linear regression models.  
 Users can select two variables as x-axis and y-axis.
 
-## Project URL
+
