@@ -16,6 +16,7 @@ Non-profit Urban Ministries of Durham (UMD) connects poor and homeless neighbors
 # Datasets
 Datasets are provided by UMD, which includes clients' information, entry and exit information, clients' health insurance conditions, income conditions and disability conditions at entry and at exit, provider information.  
 Some variables are shown below:  
+
 * CLIENT: Client ID, Client Age at Entry, Client Gender, Client Primary Race, Client Ethnicity, Client Veteran Status
 * ENTRY_EXIT: Entry Date, Exit Date, Destination, Reason for Leaving
 * EE_UDES: Client Location, Relationship to Head of Household, Prior Living Situation, Length of Stay in Previous Place
@@ -27,6 +28,7 @@ Some variables are shown below:
 
 # Questions 
 Here are some questions I am interested in:
+
 1. Demographics
 * What are the size, structure, and distribution of the clinet population at entry?
 2. Entry and Exit
@@ -39,7 +41,7 @@ Here are some questions I am interested in:
 
 # Data preparation
 
-```{r prep }
+```{r prep ,include = FALSE,message=FALSE,warning=FALSE}
 library(tidyverse)
 
 merged_data=read_tsv("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/data/merged_data.tsv")
@@ -63,7 +65,7 @@ ee_data
 
 # Demographics
 ### Age and Gender
-```{r}
+```{r, echo=FALSE}
 male_sub=subset(demographic_data,(Client.Gender == "Male"))
 
 male_sub = male_sub%>%
@@ -79,7 +81,7 @@ plot1.1=ggplot(demographic_data,mapping=aes(x=Client.Age.at.Entry))+
 plot1.1
 ```
 ### Race and Ethnicity
-```{r}
+```{r, echo=FALSE}
 race=demographic_data %>%
   drop_na()%>%
   group_by(Client.Primary.Race) %>%
@@ -104,7 +106,7 @@ plot1.3<- ggplot(eth, aes(x="", y=count, fill=Client.Ethnicity))+
 plot1.3
 ```
 ### Veteran Status
-```{r}
+```{r, echo=FALSE}
 veteran=demographic_data %>%
   drop_na()%>%
   group_by(Client.Veteran.Status) %>%
@@ -121,7 +123,7 @@ plot1.4
 
 # Entry and Exit
 ### How many clients entried the UMD? 
-```{r}
+```{r, echo=FALSE}
 client_monthly=ee_data %>%
   separate(Entry.Date, sep = "-", into = c("Year", "Month", "Day"))%>%
   group_by(Year,Month) %>%
