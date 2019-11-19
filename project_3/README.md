@@ -7,10 +7,29 @@ They connect with the community to end homelessness and fight poverty by offerin
 Here is the official website of UMD: http://www.umdurham.org/. This project is aiming to help UMD to improve their services and get prepared for future works. 
 
 ## Datasets
-The dataset is provided by UMD, which contains a collection of data with 79838 observations from 1990's to 2019. It has more than 10 variables including Client File Number, Client File Merge, Bus Tickets (Number of), Notes of Service, Food Provided for, Food Pounds, Clothing Items, Diapers, School Kits, Hygiene Kits, Referrals, and Financial Support.
+Datasets are provided by UMD, which includes clients' information, entry and exit information, clients' health insurance conditions, income conditions and disability conditions at entry and at exit, provider information.  
+Some variables are shown below:  
+* CLIENT: Client ID, Client Age at Entry, Client Gender, Client Primary Race, Client Ethnicity, Client Veteran Status
+* ENTRY_EXIT: Entry Date, Exit Date, Destination, Reason for Leaving
+* EE_UDES: Client Location, Relationship to Head of Household, Prior Living Situation, Length of Stay in Previous Place
+* HEALTH_INS_ENTRY: Covered (Entry), Health Insurance Type (Entry), Health Insurance Start Date (Entry)
+* HEALTH_INS_EXIT: Covered (Exit), Health Insurance Type (Exit), Health Insurance Start Date (Exit)
+* INCOME_ENTRY: Receiving Income (Entry), Income Source (Entry), Monthly Amount (Entry)
+* INCOME_EXIT: Receiving Income (Exit), Income Source (Exit), Monthly Amount (Exit)
+
 
 ## Questions
-
+Here are some questions I am interested in:
+1. Demographics
+* What are the size, structure, and distribution of the clinet population at entry?
+2. Entry and Exit
+  + How many clients entried the UMD? What is the distribution of their entry time?
+  + How long did they stay at the UMD?
+  + Why did they leave the UMD?
+3. Before and After
+  + What are clients' health insurance conditions at entry and at exit? 
+  + What are clients' income conditions at entry and at exit? 
+  
 
 ## Methods
 This will begin by building a docker container, then sequentially process the data using Python, generate the figures using R, and format the HTML document using Rmd. The project flow is controlled by Make.
