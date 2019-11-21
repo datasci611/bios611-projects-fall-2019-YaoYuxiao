@@ -60,6 +60,7 @@ demographic_data
 
 ee_data = merged_data %>%
   select(Client.ID,Entry.Date,Exit.Date,Destination,Reason.for.Leaving,stay_days)
+ee_data$stay_days=str_remove_all(ee_data$stay_days, " days 00:00:00.000000000")
 ee_data
 ```
 
@@ -141,9 +142,43 @@ plot2.1
 ```
 
 
-### How long did they stay at the UMD?
+### How long did they stay at the UMD? Why did they leave the UMD?
+```{r,echo=FALSE}
+ee_data$stay_days_cut <- cut(suppressWarnings(as.numeric(ee_data$stay_days)), breaks = c(0,30,60,90,120,150,180,210,240,270,Inf), labels = c('0-30','31-60','61-90','91-120','121-150','151-180','181-210','211-240','241-270','271-300'), right = TRUE)
 
-### Why did they leave the UMD?
+stay_data = ee_data %>%
+  drop_na(stay_days_cut)
+
+stay_data
+
+plot2.2=ggplot(stay_data,aes(stay_days_cut,fill=Reason.for.Leaving))+
+  geom_bar(width = 0.9, na.rm=TRUE)+
+  coord_flip() +
+  theme(legend.position = "top")+
+  labs(x="Days Stayed",y="Count",title = "Fig2.2 Number of Days Clients Stayed and Reasons for Leaving")
+
+plot2.2
+```
+
+
+### Where did they go after leaving?
+```{r,echo=FALSE}
+dest_top10=ee_data%>%
+  drop_na(Destination)%>%
+  group_by(Destination)%>%
+  summarise(client_num=n())%>%
+  filter(client_num>44)%>%
+  arrange(desc(client_num))
+
+dest_top10
+
+plot2.3=ggplot(dest_top10,aes(x="", y=client_num, fill= Destination))+
+  geom_bar(stat='identity',width = 1, na.rm=TRUE)+
+  coord_polar("y", start=0)
+
+plot2.3
+```
+
 
 # Before and After
 ### What are clients' health insurance conditions at entry and at exit? 

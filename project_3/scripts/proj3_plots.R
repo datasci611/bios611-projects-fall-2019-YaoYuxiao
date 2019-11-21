@@ -31,6 +31,7 @@ plot1.1=ggplot(demographic_data,mapping=aes(x=Client.Age.at.Entry))+
   coord_flip()
   
 plot1.1
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot1.1.png", plot1.1)
 
 #--------plot2,3: race and ethnicity-------------
 race=demographic_data %>%
@@ -44,7 +45,7 @@ plot1.2<- ggplot(race, aes(x="", y=count, fill=Client.Primary.Race))+
   coord_polar("y", start=0)+
   scale_fill_brewer(palette = "YlGnBu") 
 plot1.2
-
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot1.2.png", plot1.2)
 eth=demographic_data %>%
   drop_na()%>%
   group_by(Client.Ethnicity) %>%
@@ -55,7 +56,7 @@ plot1.3<- ggplot(eth, aes(x="", y=count, fill=Client.Ethnicity))+
   coord_polar("y", start=0)+
   scale_fill_brewer(palette = "YlGnBu") 
 plot1.3
-
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot1.3.png", plot1.3)
 #--------plot4: veteran------------------
 veteran=demographic_data %>%
   drop_na()%>%
@@ -69,10 +70,13 @@ plot1.4<- ggplot(veteran, aes(x="", y=count, fill= Client.Veteran.Status))+
   coord_polar("y", start=0)+
   scale_fill_brewer(palette = "YlGnBu") 
 plot1.4
-
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot1.4.png", plot1.4)
 #-----------entry and exit--------------
 ee_data = merged_data %>%
   select(Client.ID,Entry.Date,Exit.Date,Destination,Reason.for.Leaving,stay_days)
+
+ee_data$stay_days=str_remove_all(ee_data$stay_days, " days 00:00:00.000000000")
+
 ee_data
 #------------------plot1: line of entry time------------
 client_monthly=ee_data %>%
@@ -89,6 +93,43 @@ plot2.1=ggplot(client_monthly,aes(as.numeric(yearmonth),client_sum))+
   geom_line(size=1,color='skyblue3') +
   labs(x="Month",y="Client Number",title = "Fig2.1 Number of Clients Changes by Month")
 plot2.1
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot2.1.png", plot2.1)
 # TODO set scale_x_continuous breaks
-#--------------plot2: ---------------
+#--------------plot2: stay_days & leaving reason---------------
 
+ee_data$stay_days_cut <- cut(suppressWarnings(as.numeric(ee_data$stay_days)), breaks = c(0,30,60,90,120,150,180,210,240,270,Inf), labels = c('0-30','31-60','61-90','91-120','121-150','151-180','181-210','211-240','241-270','271-300'), right = TRUE)
+
+stay_data = ee_data %>%
+  drop_na(stay_days_cut)
+
+stay_data
+
+plot2.2=ggplot(stay_data,aes(stay_days_cut,fill=Reason.for.Leaving))+
+  geom_bar(width = 0.9, na.rm=TRUE)+
+  coord_flip() +
+  theme(legend.position = "top")+
+  labs(x="Days Stayed",y="Count",title = "Fig2.2 Number of Days Clients Stayed and Reasons for Leaving")
+
+plot2.2
+
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot2.2.png", plot2.2)
+
+
+#--------------plot3: destinations---------------
+
+
+dest_top10=ee_data%>%
+  drop_na(Destination)%>%
+  group_by(Destination)%>%
+  summarise(client_num=n())%>%
+  filter(client_num>44)%>%
+  arrange(desc(client_num))
+
+dest_top10
+
+
+plot2.3=ggplot(dest_top10,aes(x="", y=client_num, fill= Destination))+
+  geom_bar(stat='identity',width = 1, na.rm=TRUE)+
+  coord_polar("y", start=0)
+plot2.3
+ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot2.3.png", plot2.3)
