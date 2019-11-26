@@ -1,0 +1,72 @@
+To YaoYuxiao:
+
+The following feecback is for the Project 3 draft. I will respond to the repo
+after commit 43abaea.
+
+Provide feedback about the following topics:
+
+1. Is the project organized modularly, with Make as the workflow manager?
+
+I did not see a Makefile in the root or scripts repository. To satisfy the
+requirements of the project, it would be good to include one that evokes your
+docker environments and produces your final report.
+
+2. Does the project use both Python (Pandas specifically) and R (Tidyverse specifically) scripts?
+
+There are both python and R scripts available in the scripts subdirectory.
+The Juypter notebook was easy enough to follow and the markdown also includes
+an explanation of the data processing.
+
+3. Is Docker used to define execution environments appropriately?
+
+It is not clear if a docker environment was used. You should consider using one
+or more docker environments to run your scripts. It would also be reasonable to
+include an explanation of that process on your README.
+
+4. Are the plots appropriate for the data types, the hypotheses being tested, and the points being communicated?
+
+I thought the plots were useful. You might consider bar plots instead of pie
+charts. I would also suppress some of your text output in the markdown for UMD.
+
+5. How can the project be organized or documented more clearly?
+
+I would consider adding a Makefile. I would also put your figures in a
+subdirectory underneath results. You did include both a R for making plots
+and a Rmd for the report. You might be able to remove the R script if
+everything is captured well by the Rmd.
+
+6. Is the purpose of the project communicated clearly?
+
+You state your questions clearly in the README. You also remind the reader
+in your report. I would consider adding a bit more language to these sections.
+Also there is a typo in the bullet under Demographics.
+
+7. Does the purpose of the project make sense from the client’s point of view? How could the project better serve the client?
+
+The questions and data are relevant to UMD. It may be relevant to see if any
+of the demographics have changed over time.
+
+8. Is the source of the data made clear? (Remember that this project can be part of your public portfolios, so people not familiar with UMD may see it)
+
+It is mentioned on the README that UMD provided the datasets. I thought it was
+smart to list a few key variables from each dataset.
+
+9. Is the interpretation of figures clearly explained?
+
+While most of the figures were easy to follow, it would still be wise to lead
+the reader through your figures. Some language setting up the plot and then
+discussing the plot could be useful.
+
+10. Is the purpose and interpretation of analysis steps clearly communicated?
+
+I thought this could also be elaborated a bit more. You have some great data
+to show UMD, it would be helpful to describe how they could use this data to
+make informed decisions.
+
+11. Are overall take-home messages clearly communicated?
+
+This project was able to utilize both R and Python to sort through UMD's data
+on its shelter. The addition of Make and Docker will help with reproducibility
+The questions and analysis are appropriate and address UMD needs. I think some
+more could be done to improve readability, especially to a lay audience. You
+have made some great progress towards Project 3!
