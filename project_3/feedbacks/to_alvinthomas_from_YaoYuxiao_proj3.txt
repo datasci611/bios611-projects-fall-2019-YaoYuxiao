@@ -1,0 +1,61 @@
+
+Hi Alvin,
+
+
+Overall, your project3 draft has a good format and logic!
+
+
+
+-------------Review of README-------------
+
+
+The background is very clear to me.
+
+Datasets used in the project are detailed.
+
+Objectives are clear and interesting, they make sense from the client’s point of view. 
+
+Progress for the project provide a good outline.
+
+
+-------------Review of Makefile and Dockerfile----------------
+
+Docker is used to define execution environments appropriately.
+
+You may add more to Makefile later to manage the workflow of the project.
+
+-------------Review of Python and R scripts----------------
+
+
+The project uses both Python (Pandas specifically) and R (Tidyverse specifically) scripts well.
+
+Your codes are neat and readable!
+
+
+-------------Review of html report---------------------
+
+
+Various kinds of plots do a good job of analyzing and summarizing.
+
+The interpretation of figures is clearly explained.
+
+However, adding some explaination could be a good idea to help clients understand underlying meaning of the plot.
+
+Also, you may want to add more transistion paragraphs to show connections between questions.
+
+It seems that you are focusing on demographics of clients, which is definitely useful to the UMD.
+
+However, some other aspects such as correlations and staying trends might be interesting too.
+
+
+
+-------------Review of codes--------------------
+
+
+
+Your codes are neat and readable!
+
+
+
+
+Good luck in final project!
