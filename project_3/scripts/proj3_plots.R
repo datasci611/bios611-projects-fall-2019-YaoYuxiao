@@ -4,11 +4,14 @@ library(tidyverse)
 #merged_data_client<-read.delim('https://github.com/datasci611/bios611-projects-fall-2019-YaoYuxiao/blob/master/project_3/data/merged_data_client.tsv', sep="\t", header=TRUE)
 merged_data_client = read_tsv("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/data/merged_data_client.tsv")
 merged_data=read_tsv("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/data/merged_data.tsv")
+merged_data_health_ins=read_tsv("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/data/merged_data_health_ins.tsv")
+merged_data_income=read_tsv("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/data/merged_data_income.tsv")
 # clean column names
 names(merged_data)<-make.names(names(merged_data))
 names(merged_data_client)<-make.names(names(merged_data_client))
-
-str(merged_data_client)
+names(merged_data_health_ins)<-make.names(names(merged_data_health_ins))
+names(merged_data_income)<-make.names(names(merged_data_income))
+str(merged_data_health_ins)
 
 #-----------demographics--------------
 demographic_data = merged_data_client %>%
@@ -101,14 +104,18 @@ ee_data$stay_days_cut <- cut(suppressWarnings(as.numeric(ee_data$stay_days)), br
 
 stay_data = ee_data %>%
   drop_na(stay_days_cut)
+stay_data_group = stay_data%>%
+  group_by(stay_days_cut)%>%
+  summarise(client_num=n())
 
-stay_data
+stay_data_group
 
 plot2.2=ggplot(stay_data,aes(stay_days_cut,fill=Reason.for.Leaving))+
   geom_bar(width = 0.9, na.rm=TRUE)+
   coord_flip() +
-  theme(legend.position = "top")+
-  labs(x="Days Stayed",y="Count",title = "Fig2.2 Number of Days Clients Stayed and Reasons for Leaving")
+  theme(legend.position = "bottom",legend.text = element_text(size = 8))+
+  labs(x="Days Stayed",y="Count",title = "Fig2.2 Number of Days Clients Stayed and Reasons for Leaving")+
+  guides(fill = guide_legend(ncol = 2))
 
 plot2.2
 
@@ -127,9 +134,40 @@ dest_top10=ee_data%>%
 
 dest_top10
 
-
 plot2.3=ggplot(dest_top10,aes(x="", y=client_num, fill= Destination))+
   geom_bar(stat='identity',width = 1, na.rm=TRUE)+
   coord_polar("y", start=0)
 plot2.3
 ggsave("C:/Users/yaoyu/OneDrive/Documents/bios611-projects-fall-2019-YaoYuxiao/project_3/results/plot2.3.png", plot2.3)
+
+#-----------before and after--------------
+str(merged_data_health_ins)
+cover_entry=merged_data_health_ins %>%
+  filter(Covered..Entry.!='Data Not Collected')%>%
+  group_by(Covered..Entry.)%>%
+  summarize(client_num=n())
+cover_entry
+cover_exit=merged_data_health_ins %>%
+  filter(Covered..Exit.!='Data Not Collected')%>%
+  group_by(Covered..Exit.)%>%
+  summarize(client_num=n())
+cover_exit
+type_entry=merged_data_health_ins %>%
+  group_by(Health.Insurance.Type..Entry.)%>%
+  summarize(client_num=n())
+type_entry
+type_exit=merged_data_health_ins %>%
+  group_by(Health.Insurance.Type..Exit.)%>%
+  summarize(client_num=n())
+type_exit
+str(merged_data_income)
+income_entry=merged_data_income %>%
+    filter(Receiving.Income..Entry.!='Data Not Collected')%>%
+  group_by(Receiving.Income..Entry.)%>%
+  summarize(client_num=n())
+income_entry
+income_exit=merged_data_income %>%
+  filter(ReceivingIncome..Exit.!='Data Not Collected')%>%
+  group_by(ReceivingIncome..Exit.)%>%
+  summarize(client_num=n())
+income_exit
