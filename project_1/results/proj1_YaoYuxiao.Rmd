@@ -222,7 +222,7 @@ We can see that in clients who need more diapers also need more clothes, but nee
 ## Limitations
 
 * For question2 and question3, we assume that food and clothing items are provided to feed the need of clients without limitations. However, the services might be affected by other factors. As far as I know, some food and clothes come from neighborhood donation, which may lead to sources problems. Under this condition, food and clothes that are provided to clients cannot represent needs.  
-* For question4, the underline assumpssion is that more clients who need more diapers have more babies. Although it seems reasonable, it does not have to be the truth. 
+* For question4, the underlying assumpssion is that more clients who need more diapers have more babies. Although it seems reasonable, it does not have to be the truth. 
 
 ## Future works
 In the presentation, the social workers said they are particularly interested in which clients they can help make a permanent transition to self-sufficiency, and which clients continue to need help. In this context, I would like to find some patterns and differences between different types of clients. For instance, after shrinking the size of the variables through PCA, we can perform a unsupervised cluster analysis to find various types of clients and compare them in terms of mean, variance, kurtosis, and skewness (e.g., parametric methods) and general shape of distribution (e.g., nonparametric methods), based off of the principle components. 
