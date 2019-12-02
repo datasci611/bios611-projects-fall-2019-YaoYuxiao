@@ -21,14 +21,14 @@ Some variables are shown below:
 ## Questions
 Here are some questions I am interested in:
 1. Demographics
-* What are the size, structure, and distribution of the clinet population at entry?
+  + What are characteristics of the client population at entry?
+  + What are their health insurance and income conditions at entry and at exit?
+  
 2. Entry and Exit
   + How many clients entried the UMD? What is the distribution of their entry time?
   + How long did they stay at the UMD?
   + Why did they leave the UMD?
-3. Before and After
-  + What are clients' health insurance conditions at entry and at exit? 
-  + What are clients' income conditions at entry and at exit? 
+
   
 
 ## Methods
