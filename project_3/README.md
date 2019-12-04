@@ -34,3 +34,7 @@ Here are some questions I am interested in:
 ## Methods
 This will begin by building a docker container, then sequentially process the data using Python, generate the figures using R, and format the HTML document using Rmd. The project flow is controlled by Make.
 
+To re-produce the figures and HTML output, run:
+
+`make results/proj3_report.html`
+
