@@ -78,11 +78,13 @@ male_sub = male_sub%>%
 plot1.1=ggplot(demographic_data,mapping=aes(x=Client.Age.at.Entry))+
   geom_bar(subset(demographic_data,(Client.Gender == "Female")),mapping=aes(x=Client.Age.at.Entry),fill='pink2') + 
   geom_bar(male_sub,mapping=aes(x=Client.Age.at.Entry,y=count),stat = "identity",fill='skyblue2') +
-  coord_flip()
+  coord_flip()+
+  labs(title = "Fig1.1 Age Distribution by Gender")
   
 plot1.1
 ```
-From the Figure 1 we can see distributions of age and gender of clients. Apparently,men are more than women in the client population. Ages of clients starts from 18 to 80. Age of 50 has most clients for both men and women. The distribution of different ages for men and women are similar: the number the old people who are more than 60 years old is relatively small, and there is a generally decreasing trend as the age goes down from 50.
+
+From the Figure 1.1 we can see distributions of age and gender of clients. Apparently, men are more than women in the client population. Ages of clients varies from 18 to 80. Age of 50 has most clients for both men and women. The distribution of different ages for men and women are similar: the number the old people who are more than 60 years old is relatively small, and there is a generally decreasing trend as the age goes down from 50.
 
 ### Race and Ethnicity
 ```{r, echo=FALSE}
@@ -95,7 +97,8 @@ race
 plot1.2<- ggplot(race, aes(x="", y=count, fill=Client.Primary.Race))+
   geom_bar(width = 1, stat = "identity")+
   coord_polar("y", start=0)+
-  scale_fill_brewer(palette = "YlGnBu") 
+  scale_fill_brewer(palette = "YlGnBu")+
+  labs(title = "Fig1.2 Race Information")
 plot1.2
 
 eth=demographic_data %>%
@@ -106,9 +109,11 @@ eth
 plot1.3<- ggplot(eth, aes(x="", y=count, fill=Client.Ethnicity))+
   geom_bar(width = 1, stat = "identity")+
   coord_polar("y", start=0)+
-  scale_fill_brewer(palette = "YlGnBu") 
+  scale_fill_brewer(palette = "YlGnBu")+
+  labs(title = "Fig1.3 Ethnicity Information")
 plot1.3
 ```
+
 As for primary race of clients, nearly 75% of clients are black or African American. and nearly 25% of clients are white. Other races like Asian are near to 0 according to the databases. More than 97% of the clients are not Hispanic or Latino.
 
 ### Veteran Status
@@ -126,10 +131,11 @@ plot1.4<- ggplot(veteran, aes(x="", y=count, fill= Client.Veteran.Status))+
   scale_fill_brewer(palette = "YlGnBu") 
 plot1.4
 ```
-According to data from the Department of Veterans Affairs, there were around 20.4 million U.S. veterans in 2016, representing less than 10% of the total U.S. adult population. Based on our datasets, 12.2% of the clients are veteran. 
+
+According to data from the Department of Veterans Affairs, there were around 20.4 million U.S. veterans in 2016, representing less than 10% of the total U.S. adult population. Based on our datasets, 12.2% of the clients are veterans. 
 
 ### Health Insurance and Income Conditions
-Only less than 2% of the clients have health insurance at both entry and exit. Less than 1% of the clients have income at both entry and exit. The distributions of insurance types and the income recources almost keep unchanged before and after being served by the UMD.
+Only less than 2% of the clients have health insurance at both entry and exit. Less than 1% of the clients have income at both entry and exit. The distributions of insurance types and the income resources almost keep unchanged before and after being served by the UMD.
 
 ## Entry and Exit
 ### How many clients entried the UMD every month? 
@@ -149,7 +155,8 @@ plot2.1=ggplot(client_monthly,aes(as.numeric(yearmonth),client_sum))+
   labs(x="Month",y="Client Number",title = "Fig2.1 Number of Clients Changes by Month")
 plot2.1
 ```
-The figue shows numbers of new clients every month from Augest 2015 to October 2019. The peak is in May 2016 with 183 new clients. From then on, the number of new  clients decreased to around 70. However, it increased a little bit in the past few months since June 2019. The average new client number monthly in 2019 is 57.1.
+
+The figure shows numbers of new clients every month from August 2015 to October 2019. The peak is in May 2016 with 183 new clients. From then on, the number of new  clients decreased to around 70. However, it increased a little bit in the past few months since June 2019. The average new client number monthly in 2019 is 57.1.
 
 ### How long did they stay at the UMD? Why did they leave the UMD?
 ```{r,echo=FALSE}
@@ -172,7 +179,8 @@ plot2.2=ggplot(stay_data,aes(stay_days_cut,fill=Reason.for.Leaving))+
 
 plot2.2
 ```
-The figure shows number of days clients stayed at the UMD and the reasons why they left. We can see that most of the clients stayed less than 30 days, which is more than 4 times of number of clients who stayed 31-60 days. The most common reasons for leaving are "Other" "Unknown/Disappeared", which suggests we need more precise data about reasons for leaving. Besides, "Left for housing opportunities before completing program" is the most popular reason as we know. 
+
+The figure shows number of days clients stayed at the UMD and the reasons why they left. We can see that most of the clients stayed less than 30 days, which is more than 4 times of number of clients who stayed 31-60 days. The most common reasons for leaving are "Other" "Unknown/Disappeared", which suggests we need more precise data about reasons for leaving. Besides, "Left for housing opportunities before completing program" is the most popular reason we know. 
 
 ### Where did they go after leaving?
 ```{r,echo=FALSE}
@@ -191,12 +199,13 @@ plot2.3=ggplot(dest_top10,aes(x="", y=client_num, fill= Destination))+
 
 plot2.3
 ```
-According to the figure, about one third of clients stay or live with friends with temporary tenure after leaving the UMD. About one fourth of clients did not complete exit interview, this coincide with "Unknown/Disappeared" leaving reason shown before. About 11% clients stay or live with family with temporary tenure after leaving the UMD. These are the top three reasons for leaving.
+
+According to the figure, about one third of clients stay or live with friends with temporary tenure after leaving the UMD. About one fourth of clients did not complete exit interview, this coincide with "Unknown/Disappeared" leaving reason shown before. About 11% clients stay or live with family with temporary tenure after leaving the UMD. These are the top three destinations after leaving.
 
 
 ## Conclusion and Discussion
 
-* Totally, there are 2,075 individual clients were served by the UMD from Augest 2015 to October 2019. Men are more than women in the client population and ages varies from 18 to 80. Most of clients are 40-60 years old at entry.
+* Totally, there are 2,075 individual clients were served by the UMD from August 2015 to October 2019. Men are more than women in the client population and ages varies from 18 to 80. Most of clients are 40-60 years old at entry.
 * Nearly 75% of clients are black or African American. More than 97% of the clients are not Hispanic or Latino.
 * 12.2% of the clients are veteran, which is higher than the percentage on a national scale.
 * From May 2016 to now, the number of new  clients decreased from 183 to around 70. However, it increased a little bit in the past few months since June 2019.
